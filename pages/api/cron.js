@@ -12,9 +12,25 @@ async function login() {
 }
 
 async function getRandomUsers(count = 5) {
-  const response = await axios.get('https://search.bsky.social/api/search?q=a');
-  return response.data.slice(0, count).map((user) => user.did);
-}
+    try {
+      const response = await agent.app.bsky.feed.getTimeline({ limit: 100 });
+      const posts = response.data.feed;
+  
+      const uniqueUsers = new Set();
+      posts.forEach((post) => {
+        if (post.post?.author?.did) {
+          uniqueUsers.add(post.post.author.did);
+        }
+      });
+  
+      const userArray = Array.from(uniqueUsers);
+      return userArray.slice(0, count);
+    } catch (err) {
+      console.error('Error fetching random users from timeline:', err.message);
+      return [];
+    }
+  }
+  
 
 async function followUsers() {
   const users = await getRandomUsers(5);
