@@ -6,7 +6,7 @@
       "start": "node index.js"
     },
     "dependencies": {
-      "@atproto/api": "^1.0.0",
+      "@atproto/api": "^0.13.27",
       "axios": "^1.4.0"
     }
   }  
