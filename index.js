@@ -12,7 +12,7 @@ async function login() {
     console.log('Logged in as:', BLUESKY_HANDLE);
   } catch (err) {
     console.error('Error logging in:', err.message);
-    process.exit(1);
+    throw err;
   }
 }
 
@@ -52,4 +52,12 @@ async function main() {
   setInterval(followUsers, 12 * 60 * 1000);
 }
 
-main();
+module.exports = async (req, res) => {
+  try {
+    await main();
+    res.status(200).send('Bot started successfully');
+  } catch (err) {
+    console.error('Error starting the bot:', err.message);
+    res.status(500).send('Failed to start the bot');
+  }
+};
