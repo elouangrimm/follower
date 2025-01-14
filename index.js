@@ -46,18 +46,13 @@ async function followUsers() {
   }
 }
 
-async function main() {
-  await login();
-  console.log('Bot is running...');
-  setInterval(followUsers, 12 * 60 * 1000);
-}
-
 module.exports = async (req, res) => {
   try {
-    await main();
-    res.status(200).send('Bot started successfully');
+    await login();
+    await followUsers();
+    res.status(200).send('Bot executed successfully');
   } catch (err) {
-    console.error('Error starting the bot:', err.message);
-    res.status(500).send('Failed to start the bot');
+    console.error('Error in bot execution:', err.message);
+    res.status(500).send('Bot execution failed');
   }
 };
