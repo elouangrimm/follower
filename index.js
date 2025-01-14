@@ -12,6 +12,7 @@ async function login() {
     console.log('Logged in as:', BLUESKY_HANDLE);
   } catch (err) {
     console.error('Error logging in:', err.message);
+    process.exit(1);
   }
 }
 
@@ -27,17 +28,21 @@ async function getRandomUsers(count = 5) {
 }
 
 async function followUsers() {
-  const users = await getRandomUsers(5);
-  for (const did of users) {
-    try {
-      await agent.app.bsky.graph.follow.create(
-        { repo: agent.session?.did },
-        { subject: did, createdAt: new Date().toISOString() }
-      );
-      console.log(`Followed user: ${did}`);
-    } catch (err) {
-      console.error(`Error following ${did}:`, err.message);
+  try {
+    const users = await getRandomUsers(5);
+    for (const did of users) {
+      try {
+        await agent.app.bsky.graph.follow.create(
+          { repo: agent.session?.did },
+          { subject: did, createdAt: new Date().toISOString() }
+        );
+        console.log(`Followed user: ${did}`);
+      } catch (err) {
+        console.error(`Error following ${did}:`, err.message);
+      }
     }
+  } catch (err) {
+    console.error('Error fetching or following users:', err.message);
   }
 }
 
@@ -45,5 +50,6 @@ async function main() {
   await login();
   console.log('Bot is running...');
   setInterval(followUsers, 12 * 60 * 1000);
+}
 
 main();
